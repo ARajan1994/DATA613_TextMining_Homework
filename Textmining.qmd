@@ -6,4 +6,34 @@ embed-resources: true
 editor: visual
 ---
 
-## 
+## Part 1 – Load Required Libraries
+
+-   In this assignment, we use several R packages to perform text mining, sentiment analysis, data manipulation, and visualization.
+
+    ```{r}
+    #| label: Required Libraries
+
+    # Load required libraries
+
+    library(tidyverse)
+    library(tidytext)
+    library(janeaustenr)
+    library(stringr)
+    library(wordcloud)
+    library(RColorBrewer)
+
+    ```
+
+-   Explanation of the packages:
+
+    -    tidyverse: Data manipulation and visualization
+
+    -   tidytext: Text mining and sentiment analysis
+
+    -   janeaustenr: Provides Jane Austen's books
+
+    -   stringr: Text processing and regular expressions
+
+    -   wordcloud: Creates word cloud visualizations
+
+    -   RColorBrewer: Provides color palettes
