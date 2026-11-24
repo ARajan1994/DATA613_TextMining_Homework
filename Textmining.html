@@ -2271,6 +2271,83 @@ vertical-align: -.125em;
 </ul></li>
 </ul>
 </section>
+<section id="part-2-data-preparation-loading-the-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-data-preparation-loading-the-dataset">Part 2 – Data Preparation: Loading the Dataset</h2>
+<ul>
+<li><p>Data Preparation</p>
+<ul>
+<li>In this section, we load Jane Austen’s books using the <code>janeaustenr</code> package and explore the available dataset. We will identify the different books and examine the structure of the text data.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Jane Austen&#39;s books</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>austen_data <span class="ot">&lt;-</span> <span class="fu">austen_books</span>()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first six rows</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(austen_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  text                    book               
+  &lt;chr&gt;                   &lt;fct&gt;              
+1 &quot;SENSE AND SENSIBILITY&quot; Sense &amp; Sensibility
+2 &quot;&quot;                      Sense &amp; Sensibility
+3 &quot;by Jane Austen&quot;        Sense &amp; Sensibility
+4 &quot;&quot;                      Sense &amp; Sensibility
+5 &quot;(1811)&quot;                Sense &amp; Sensibility
+6 &quot;&quot;                      Sense &amp; Sensibility</code></pre>
+</div>
+</div></li>
+<li><p>Explanation:</p>
+<ul>
+<li>austen_books() loads the collection of Jane Austen’s novels.</li>
+<li>We store the dataset in an object called austen_data.</li>
+<li>head() displays the first six rows so we can inspect the data.</li>
+</ul></li>
+<li><p>Explore the available books</p>
+<ul>
+<li>The unique() function identifies the distinct book titles in the dataset. This allows us to confirm that Emma is included.</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display all available book titles</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(austen_data<span class="sc">$</span>book)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] Sense &amp; Sensibility Pride &amp; Prejudice   Mansfield Park     
+[4] Emma                Northanger Abbey    Persuasion         
+6 Levels: Sense &amp; Sensibility Pride &amp; Prejudice Mansfield Park ... Persuasion</code></pre>
+</div>
+</div>
+<ul>
+<li>Examine the dataset structure
+<ul>
+<li>glimpse() shows the columns and data types.</li>
+<li>count(book) calculates how many text lines are available for each novel.</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Examine the structure of the dataset</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(austen_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 73,422
+Columns: 2
+$ text &lt;chr&gt; &quot;SENSE AND SENSIBILITY&quot;, &quot;&quot;, &quot;by Jane Austen&quot;, &quot;&quot;, &quot;(1811)&quot;, &quot;&quot;, …
+$ book &lt;fct&gt; Sense &amp; Sensibility, Sense &amp; Sensibility, Sense &amp; Sensibility, Se…</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count the number of lines for each book</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>austen_data <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(book)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  book                    n
+  &lt;fct&gt;               &lt;int&gt;
+1 Sense &amp; Sensibility 12624
+2 Pride &amp; Prejudice   13030
+3 Mansfield Park      15349
+4 Emma                16235
+5 Northanger Abbey     7856
+6 Persuasion           8328</code></pre>
+</div>
+</div>
+</section>
 
 </main>
 <!-- /main column -->

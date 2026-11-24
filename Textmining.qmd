@@ -26,7 +26,7 @@ editor: visual
 
 -   Explanation of the packages:
 
-    -    tidyverse: Data manipulation and visualization
+    -   tidyverse: Data manipulation and visualization
 
     -   tidytext: Text mining and sentiment analysis
 
@@ -37,3 +37,55 @@ editor: visual
     -   wordcloud: Creates word cloud visualizations
 
     -   RColorBrewer: Provides color palettes
+
+## Part 2 – Data Preparation: Loading the Dataset
+
+-   Data Preparation
+
+    -   In this section, we load Jane Austen's books using the `janeaustenr` package and explore the available dataset. We will identify the different books and examine the structure of the text data.
+
+    ```{r}
+    #| label: Load Dataset
+
+    # Load Jane Austen's books
+    austen_data <- austen_books()
+
+    # Display the first six rows
+    head(austen_data)
+
+
+    ```
+
+-   Explanation:
+
+    -   austen_books() loads the collection of Jane Austen's novels.
+    -   We store the dataset in an object called austen_data.
+    -   head() displays the first six rows so we can inspect the data.
+
+-   Explore the available books
+
+    -   The unique() function identifies the distinct book titles in the dataset. This allows us to confirm that Emma is included.
+
+```{r}
+#| label: Explore the available books
+
+# Display all available book titles
+unique(austen_data$book)
+
+```
+
+-   Examine the dataset structure
+    -   glimpse() shows the columns and data types.
+    -   count(book) calculates how many text lines are available for each novel.
+
+```{r}
+#| label: Dataset Structure
+
+# Examine the structure of the dataset
+glimpse(austen_data)
+
+# Count the number of lines for each book
+austen_data %>%
+  count(book)
+
+```
