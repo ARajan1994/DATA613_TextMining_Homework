@@ -89,3 +89,70 @@ austen_data %>%
   count(book)
 
 ```
+
+## Part 3 – Extracting Emma and Chapter Detection
+
+-   In this section, we extract Jane Austen's novel Emma from the complete dataset. We then use regular expressions to identify chapter headings and assign line numbers and chapter numbers to the text.
+
+```{r}
+#| label: Extracting Emma and chapter detection
+
+# Extract Emma and identify chapter boundaries
+
+emma <- austen_data %>%
+  filter(book == "Emma") %>%
+  mutate(
+    linenumber = row_number(),
+    chapter = cumsum(
+      str_detect(
+        text,
+        regex("^chapter [\\divxlc]", ignore_case = TRUE)
+      )
+    )
+  )
+
+# Display the first few rows
+head(emma)
+
+```
+
+-   Explanation of the code:
+
+    -   filter(): Selects only the novel Emma.
+    -   mutate(): Creates new columns.
+    -   row_number(): Assigns a sequential number to each line.
+    -   str_detect(): Detects chapter headings using a regular expression.
+    -   regex(): Makes chapter detection case-insensitive.
+    -   cumsum(): Increments the chapter number whenever a chapter heading is detected.
+    -   The regular expression "\^chapter \[\\divxlc\]": looks for lines beginning with the word "Chapter" followed by a Roman numeral or digit.
+
+-   Check the chapter numbers
+
+    -   This helps verify that the chapter identification worked.
+
+```{r}
+#| label: Check Chapter Numbers
+
+# Check the number of chapters
+max(emma$chapter)
+
+# Count lines in each chapter
+emma %>%
+  count(chapter)
+
+```
+
+-   Check the dataset structure
+
+```{r}
+#| label: Data structure check 2
+
+# Examine the prepared Emma dataset
+glimpse(emma)
+
+# Display the first 10 rows
+emma %>%
+  select(book, linenumber, chapter, text) %>%
+  head(10)
+
+```

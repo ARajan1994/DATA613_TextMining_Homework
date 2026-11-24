@@ -2348,6 +2348,117 @@ $ book &lt;fct&gt; Sense &amp; Sensibility, Sense &amp; Sensibility, Sense &amp;
 </div>
 </div>
 </section>
+<section id="part-3-extracting-emma-and-chapter-detection" class="level2">
+<h2 class="anchored" data-anchor-id="part-3-extracting-emma-and-chapter-detection">Part 3 – Extracting Emma and Chapter Detection</h2>
+<ul>
+<li>In this section, we extract Jane Austen’s novel Emma from the complete dataset. We then use regular expressions to identify chapter headings and assign line numbers and chapter numbers to the text.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract Emma and identify chapter boundaries</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>emma <span class="ot">&lt;-</span> austen_data <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(book <span class="sc">==</span> <span class="st">&quot;Emma&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">linenumber =</span> <span class="fu">row_number</span>(),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">chapter =</span> <span class="fu">cumsum</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        text,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">regex</span>(<span class="st">&quot;^chapter [</span><span class="sc">\\</span><span class="st">divxlc]&quot;</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few rows</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(emma)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  text             book  linenumber chapter
+  &lt;chr&gt;            &lt;fct&gt;      &lt;int&gt;   &lt;int&gt;
+1 &quot;EMMA&quot;           Emma           1       0
+2 &quot;&quot;               Emma           2       0
+3 &quot;By Jane Austen&quot; Emma           3       0
+4 &quot;&quot;               Emma           4       0
+5 &quot;&quot;               Emma           5       0
+6 &quot;&quot;               Emma           6       0</code></pre>
+</div>
+</div>
+<ul>
+<li><p>Explanation of the code:</p>
+<ul>
+<li>filter(): Selects only the novel Emma.</li>
+<li>mutate(): Creates new columns.</li>
+<li>row_number(): Assigns a sequential number to each line.</li>
+<li>str_detect(): Detects chapter headings using a regular expression.</li>
+<li>regex(): Makes chapter detection case-insensitive.</li>
+<li>cumsum(): Increments the chapter number whenever a chapter heading is detected.</li>
+<li>The regular expression “^chapter [\divxlc]”: looks for lines beginning with the word “Chapter” followed by a Roman numeral or digit.</li>
+</ul></li>
+<li><p>Check the chapter numbers</p>
+<ul>
+<li>This helps verify that the chapter identification worked.</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the number of chapters</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(emma<span class="sc">$</span>chapter)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 55</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count lines in each chapter</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>emma <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(chapter)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 56 × 2
+   chapter     n
+     &lt;int&gt; &lt;int&gt;
+ 1       0    11
+ 2       1   328
+ 3       2   164
+ 4       3   179
+ 5       4   343
+ 6       5   202
+ 7       6   284
+ 8       7   260
+ 9       8   422
+10       9   542
+# ℹ 46 more rows</code></pre>
+</div>
+</div>
+<ul>
+<li>Check the dataset structure</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Examine the prepared Emma dataset</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(emma)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 16,235
+Columns: 4
+$ text       &lt;chr&gt; &quot;EMMA&quot;, &quot;&quot;, &quot;By Jane Austen&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;VOLUME I&quot;, &quot;…
+$ book       &lt;fct&gt; Emma, Emma, Emma, Emma, Emma, Emma, Emma, Emma, Emma, Emma,…
+$ linenumber &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, …
+$ chapter    &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,…</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first 10 rows</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>emma <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(book, linenumber, chapter, text) <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 4
+   book  linenumber chapter text            
+   &lt;fct&gt;      &lt;int&gt;   &lt;int&gt; &lt;chr&gt;           
+ 1 Emma           1       0 &quot;EMMA&quot;          
+ 2 Emma           2       0 &quot;&quot;              
+ 3 Emma           3       0 &quot;By Jane Austen&quot;
+ 4 Emma           4       0 &quot;&quot;              
+ 5 Emma           5       0 &quot;&quot;              
+ 6 Emma           6       0 &quot;&quot;              
+ 7 Emma           7       0 &quot;&quot;              
+ 8 Emma           8       0 &quot;VOLUME I&quot;      
+ 9 Emma           9       0 &quot;&quot;              
+10 Emma          10       0 &quot;&quot;              </code></pre>
+</div>
+</div>
+</section>
 
 </main>
 <!-- /main column -->
