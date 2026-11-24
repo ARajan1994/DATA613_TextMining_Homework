@@ -156,3 +156,52 @@ emma %>%
   head(10)
 
 ```
+
+## Part 4 – Tokenization
+
+-   Tokenization is the process of breaking text into smaller units called tokens. In this assignment, we use the `unnest_tokens()` function from the tidytext package to separate Emma's text into individual words.
+
+```{r}
+#| label: Tokenization
+
+# Tokenize Emma's text into individual words
+
+emma_words <- emma %>%
+  unnest_tokens(word, text)
+
+# Display the first few words
+head(emma_words)
+
+```
+
+-   Explanation of the code:
+
+    -   emma %\>% passes the Emma dataset to the next operation.
+    -   unnest_tokens(word, text) separates the text into individual words.
+    -   word is the name of the new column containing individual words.
+    -   text is the original column containing the book's text.
+    -   emma_words stores the resulting tokenized dataset.
+
+-   Examine the tokenized dataset
+
+```{r}
+#| label: Examine tokenized dataset
+
+# Examine the tokenized dataset
+glimpse(emma_words)
+
+# Count the total number of words
+nrow(emma_words)
+
+# Display the 20 most frequent words
+emma_words %>%
+  count(word, sort = TRUE) %>%
+  head(20)
+```
+
+-   Explanation of the code:
+
+    -   glimpse() examines the dataset structure.
+    -   nrow() counts the total number of word tokens.
+    -   count(word, sort = TRUE) calculates word frequencies and sorts them from highest to lowest.
+    -   head(20) displays the 20 most frequent words.
