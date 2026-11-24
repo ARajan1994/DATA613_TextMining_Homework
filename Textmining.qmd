@@ -205,3 +205,169 @@ emma_words %>%
     -   nrow() counts the total number of word tokens.
     -   count(word, sort = TRUE) calculates word frequencies and sorts them from highest to lowest.
     -   head(20) displays the 20 most frequent words.
+
+## Part 5 – Sentiment Analysis
+
+-   The NRC sentiment lexicon categorizes words according to different emotions and sentiments. In this section, we focus on words associated with joy to explore joyful language in Jane Austen's Emma.
+
+```{r}
+#| label: NRC
+
+# Load required libraries
+library(textdata)
+
+# Filter NRC lexicon for joy
+nrc_joy <- get_sentiments("nrc") %>%
+  filter(sentiment == "joy")
+
+# Join with Emma's words and count frequency
+emma_nrc <- emma_words %>%
+  inner_join(nrc_joy, by = "word") %>%
+  count(word, sort = TRUE)
+
+# Keep frequently occurring words (n > 50)
+emma_nrc_filtered <- emma_nrc %>%
+  filter(n > 50)
+
+# Display results
+head(emma_nrc_filtered, 20)
+```
+
+-   AFINN — Positive scores
+
+```{r}
+#| label: AFINN
+
+# Filter AFINN lexicon for positive scores (>= 1)
+afinn_positive <- get_sentiments("afinn") %>%
+  filter(value >= 1)
+
+# Join with Emma's words and count frequency
+emma_afinn <- emma_words %>%
+  inner_join(afinn_positive, by = "word") %>%
+  count(word, sort = TRUE)
+
+# Keep frequently occurring words
+emma_afinn_filtered <- emma_afinn %>%
+  filter(n > 50)
+
+head(emma_afinn_filtered, 20)
+
+```
+
+-   Bing — Positive words
+
+```{r}
+#| label: BING
+
+# Filter Bing lexicon for positive words
+bing_positive <- get_sentiments("bing") %>%
+  filter(sentiment == "positive")
+
+# Join with Emma's words and count frequency
+emma_bing <- emma_words %>%
+  inner_join(bing_positive, by = "word") %>%
+  count(word, sort = TRUE)
+
+# Keep frequently occurring words
+emma_bing_filtered <- emma_bing %>%
+  filter(n > 50)
+
+head(emma_bing_filtered, 20)
+
+```
+
+## Part 6 – Visualization
+
+-   Bar charts using ggplot2
+
+```{r}
+#| label: NRC Bar Chart
+
+# NRC joy bar chart
+ggplot(emma_nrc_filtered,
+       aes(x = reorder(word, n), y = n)) +
+  geom_col(fill = "gold") +
+  coord_flip() +
+  labs(
+    title = "Frequently Used Joy Words in Emma (NRC)",
+    x = "Word",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+#| label: AFINN Bar Chart
+
+# AFINN positive bar chart
+ggplot(emma_afinn_filtered,
+       aes(x = reorder(word, n), y = n)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Frequently Used Positive Words in Emma (AFINN)",
+    x = "Word",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: Bing Bar Chart
+
+# Bing positive bar chart
+ggplot(emma_bing_filtered,
+       aes(x = reorder(word, n), y = n)) +
+  geom_col(fill = "seagreen") +
+  coord_flip() +
+  labs(
+    title = "Frequently Used Positive Words in Emma (Bing)",
+    x = "Word",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+```
+
+-   Word clouds
+
+```{r}
+#| label: NRC Word Clouds
+
+# NRC joy word cloud
+wordcloud(
+  words = emma_nrc_filtered$word,
+  freq = emma_nrc_filtered$n,
+  max.words = 100,
+  random.order = FALSE,
+  colors = brewer.pal(8, "Dark2")
+)
+```
+
+```{r}
+#| label: AFINN Word Cloud
+
+# AFINN positive word cloud
+wordcloud(
+  words = emma_afinn_filtered$word,
+  freq = emma_afinn_filtered$n,
+  max.words = 100,
+  random.order = FALSE,
+  colors = brewer.pal(8, "Set2")
+)
+```
+
+```{r}
+#| label: Bing Word Cloud
+
+# Bing positive word cloud
+wordcloud(
+  words = emma_bing_filtered$word,
+  freq = emma_bing_filtered$n,
+  max.words = 100,
+  random.order = FALSE,
+  colors = brewer.pal(8, "Paired")
+)
+```
+
